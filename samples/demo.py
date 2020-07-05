@@ -25,9 +25,12 @@ list_a = [{'测试用例编号': 'case01', '测试用例名称': '测试能否�
 case_list = {}
 # for i in list_a:
 #     case_list.setdefault("case_info", []).append(i)
-# for i in list_a:
-#     case_list.setdefault(i['测试用例编号'], []).append(i)
-#
+for i in list_a:
+    # print(i)
+    # case_list.setdefault(i['测试用例编号'], []).append(i)
+    case_list.setdefault(i['测试用例编号'], [])
+    print(case_list)
+
 
 # all_case_list = []
 # for i in list_a:
@@ -40,18 +43,18 @@ case_list = {}
 
 # print(case_list)
 
-
-case_dict = {}
-for i in list_a:
-    case_dict.setdefault(i['测试用例编号'], []).append(i)
-print(case_dict)
-
-case_list = []
-for k,v in case_dict.items():
-    case_dict_ = {}
-    case_dict['case_name'] = k
-    case_dict['case_info'] = v
-    case_list.append(case_dict)
-
-for c in case_list:
-   print(c)
+#
+# case_dict = {}
+# for i in list_a:
+#     case_dict.setdefault(i['测试用例编号'], []).append(i)
+# print(case_dict)
+#
+# case_list = []
+# for k,v in case_dict.items():
+#     case_dict_ = {}
+#     case_dict['case_name'] = k
+#     case_dict['case_info'] = v
+#     case_list.append(case_dict)
+#
+# for c in case_list:
+#    print(c)

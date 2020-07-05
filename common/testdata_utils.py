@@ -6,15 +6,12 @@
 # @desc
 import os
 from common.excel_utils import ExcelUtils
-
-current_path = os.path.dirname(__file__)
-test_data_file = os.path.join(current_path, '..', 'test_data/weixin_data.xlsx')
-
+from common import config
 
 class TestdataUtils:
-    def __init__(self, test_data_path=test_data_file):
+    def __init__(self, test_data_path=config.CASE_DATA_PATH):
         self.test_data_path = test_data_path
-        self.test_data = ExcelUtils(test_data_file, "Sheet1").get_sheet_data_by_dict()
+        self.test_data = ExcelUtils(self.test_data_path, "Sheet1").get_sheet_data_by_dict()
 
     def get_testcase_data_dict(self):
         case_dict = {}
