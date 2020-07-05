@@ -45,32 +45,39 @@ class ExcelUtils:
     def get_merged_cell_value(self, row_index, col_index):
         """既能获取合并单元格的数据，又能获取合并单元格的数据"""
         sheet_value = None
-        for (rlow, rhigh, clow, chigh) in self.get_merged_info():
-            if rlow <= row_index < rhigh:
-                if clow <= col_index < chigh:
-                    sheet_value = self.get_cell_value(rlow, clow)
-                    break;  # 防止循环取进行判断出现值覆盖的情况
+        if self.get_merged_info():
+            for (rlow, rhigh, clow, chigh) in self.get_merged_info():
+                if rlow <= row_index < rhigh:
+                    if clow <= col_index < chigh:
+                        sheet_value = self.get_cell_value(rlow, clow)
+                        break;  # 防止循环取进行判断出现值覆盖的情况
+                    else:
+                        sheet_value = self.get_cell_value(row_index, col_index)
                 else:
                     sheet_value = self.get_cell_value(row_index, col_index)
-            else:
-                sheet_value = self.get_cell_value(row_index, col_index)
+        else:
+            sheet_value = self.get_cell_value(row_index, col_index)
         return sheet_value
 
     # 获取所有数据，字典格式
     def get_sheet_data_by_dict(self):
-        all_data_list = []
+        all_data_dict = []
         first_row = self.sheet.row(0)
-        print(first_row)
+        # print(first_row)
         for row in range(1, self.get_raw_count()):
             row_dict = {}
             for col in range(0, self.get_col_count()):
                 row_dict[first_row[col].value] = self.get_merged_cell_value(row, col)
-            all_data_list.append(row_dict)
-        return all_data_list
+            all_data_dict.append(row_dict)
+        return all_data_dict
+
+
+
 
 if __name__ == '__main__':
-    excel_path = os.path.join(os.path.dirname(__file__), '../samples/data/test_data.xlsx')
-    print(excel_path)
+    excel_path = os.path.join(os.path.dirname(__file__), '../samples/data/weixin_data.xlsx')
+    # print(excel_path)
     excel_utils = ExcelUtils(excel_path)
-    cell_value = excel_utils.get_merged_cell_value(4,0)
+    cell_value = excel_utils.get_merged_cell_value(1, 0)
+    # print(cell_value)
     print(excel_utils.get_sheet_data_by_dict())
