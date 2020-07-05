@@ -14,5 +14,7 @@ config_file = os.path.join(current_path, '..', 'conf/config.ini')
 config_utils = ConfigUtils(config_file)
 URL = config_utils.read_value('default', 'URL')
 CASE_DATA_PATH = config_utils.read_value('path', 'CASE_DATA_PATH')
+LOG_PATH = config_utils.read_value('path', 'LOG_PATH')
+
 
 print(URL)
