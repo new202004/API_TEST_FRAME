@@ -34,3 +34,6 @@ if __name__ == '__main__':
     # data_info = test_data_utils.get_testcase_data()
     data_info = test_data_utils.get_testcase_data_list()
     print(data_info)
+    for i in data_info :
+        print(i)
+        print('\n')
