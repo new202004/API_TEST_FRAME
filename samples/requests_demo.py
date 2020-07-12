@@ -23,16 +23,17 @@ def test_token():
 # 创建一个标签
 def create_tag(token):
     get_params = {"access_token": token}
-    post_params = {"tag": {"name": "newdream111111"}}
+    # post_params = {"tag": {"name": "长沙009"}}
+    post_params = {'tag': {'name': '7月8888'}}
     headers = {"content_type": "applocation/json"}
-
-    response = requests.post(url=hosts + '/cgi-bin/tags/create',
+    response = requests.post(url=hosts + 'cgi-bin/tags/create',
                              params=get_params,
-                             data=post_params,
+                             json=post_params,
                              headers=headers).json()
-    print(response)
+    print(get_params)
 
 
 if __name__ == '__main__':
     token = test_token()
+    print(token)
     create_tag(token)
