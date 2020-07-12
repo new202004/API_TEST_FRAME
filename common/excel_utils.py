@@ -75,9 +75,11 @@ class ExcelUtils:
 
 
 if __name__ == '__main__':
-    excel_path = os.path.join(os.path.dirname(__file__), '../samples/data/weixin_data.xlsx')
-    # print(excel_path)
+    excel_path = os.path.join(os.path.dirname(__file__), '../test_data/test_case.xlsx')
+    print(excel_path)
     excel_utils = ExcelUtils(excel_path)
     cell_value = excel_utils.get_merged_cell_value(1, 0)
     # print(cell_value)
-    print(excel_utils.get_sheet_data_by_dict())
+    for i in excel_utils.get_sheet_data_by_dict():
+        print(i)
+        print('\n')
