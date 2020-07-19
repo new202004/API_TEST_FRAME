@@ -9,6 +9,9 @@ import re
 import requests
 import jsonpath
 from common.localconfig_utils import config
+from requests.exceptions import RequestException
+from requests.exceptions import ProxyError
+from requests.exceptions import ConnectionError
 
 
 class RequetsUtils:
@@ -19,26 +22,36 @@ class RequetsUtils:
         self.temp_varibles = {}  # 临时变量，存放动参
 
     def get(self, get_info, param):
-        url = self.hosts + get_info["请求地址"]
-        param = ast.literal_eval(param)  # 将字典转换为字符串
-        res = self.session.get(url=url, params=param)
-        res.encoding = res.apparent_encoding
+        try:
+            url = self.hosts + get_info["请求地址"]
+            param = ast.literal_eval(param)  # 将字典转换为字符串
+            res = self.session.get(url=url, params=param)
+            res.encoding = res.apparent_encoding
 
-        if get_info["取值方式"] == "json取值":
-            value = jsonpath.jsonpath(res.json(), get_info["取值代码"])
-            self.temp_varibles[get_info["传值变量"]] = value
-        elif get_info["取值方式"] == "正则取值":
-            value = re.findall(get_info["取值代码"], res.text)
-            self.temp_varibles[get_info["传值变量"]] = value
+            if get_info["取值方式"] == "json取值":
+                value = jsonpath.jsonpath(res.json(), get_info["取值代码"])
+                self.temp_varibles[get_info["传值变量"]] = value
+            elif get_info["取值方式"] == "正则取值":
+                value = re.findall(get_info["取值代码"], res.text)
+                self.temp_varibles[get_info["传值变量"]] = value
 
-        result = {
-            'code': 0,  # 请求是否成功的标志位
-            'response_reason': res.reason,
-            'response_code': res.status_code,
-            'response_headers': res.headers,
-            'response_body': res.json()
-        }
+            result = {
+                'code': 0,  # 请求是否成功的标志位
+                'response_reason': res.reason,
+                'response_code': res.status_code,
+                'response_headers': res.headers,
+                'response_body': res.json()
+            }
+        except ProxyError as e:
+            result = {'code': 4, 'result': '[%s]请求：代理错误异常，原因是[%s]' % (get_info["接口名称"], e.__str__())}
+        except ConnectionError as e:
+            result = {'code': 4, 'result': '[%s]请求：连接异常，原因是[%s]' % (get_info["接口名称"], e.__str__())}
+        except RequestException as e:
+            result = {'code': 4, 'result': '[%s]请求：请求异常，原因是[%s]' % (get_info["接口名称"], e.__str__())}
+        except Exception as e:
+            result = {'code': 4, 'result': '[%s]请求执行报系统错误，原因是[%s]' % (get_info["接口名称"], e.__str__())}
         print(result)
+
         return result
 
     def post(self, post_info, param):
@@ -88,12 +101,11 @@ class RequetsUtils:
                 for param_varible in param_varibles_list:
                     param = param.replace(param_varible, "'%s'" % self.temp_varibles.get(param_varible[2:-1])[0])
             temp_result = self.request(step_info, param)
-
             if temp_result['code'] != 0:
                 break
             else:
                 result = temp_result
-        return result
+                return result
 
 
 if __name__ == '__main__':
